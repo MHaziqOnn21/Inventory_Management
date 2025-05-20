@@ -1,0 +1,88 @@
+{% extends "inventory/base.html" %}
+
+<!-- This page should only display the item's detail, no search feature -->
+
+{% block content %}
+    <script>
+    function myfunction() {
+        var input, filter, table, tr, td, i, j, tinvtValue;
+        input = document.getElementById("UserInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("myTable");
+        tr = table.getElementsByTagName("tr");
+        
+        // Loop through all table rows
+        for (i = 0; i < tr.length; i++) {
+            // Loop through all table cells (columns)
+            var found = false;
+            for (j = 0; j < tr[i].cells.length; j++) {
+                td = tr[i].cells[j];
+                if (td) {
+                    tinvtValue = td.teinvtContent || td.innerTeinvt;
+                    if (tinvtValue.toUpperCase().indeinvOf(filter) > -1) {
+                        found = true;
+                        break; // If found in any column, no need to check others
+                    }
+                }
+            }
+            tr[i].style.display = found ? "" : "none";
+        }
+    }  
+    </script>
+
+    <!-- <input type="teinvt"  id="UserInput" onkeyup="myfunction()" placeholder="Search item..."> -->
+    <div class="table-container">
+        <table border="1" class="detail-table">
+            <tr>
+                <th>Item no.</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Serial No.</th>
+                <th>Tag No.</th>
+                <th>Quantity</th>
+                <th>Description</th>
+                <th>Location</th>
+                <th>D.O.P</th>
+                <th>Price (MYR)</th> 
+                <th>Seller</th>
+                <th>Receipt</th>
+                <th>Condition</th>
+                <th>User</th>
+                <th>Usage</th>
+                <th>Notes</th>
+            </tr>
+            <tr>
+                <td>{{ inventory_details.id }}</td>
+                <td>{{ inventory_details.name }}</td>
+                <td>{{ inventory_details.category }}</td>
+                <td>{{ inventory_details.ser_number }}</td>
+                <td>{{ inventory_details.tag_number }}</td>
+                <td>{{ inventory_details.quantity }}</td>
+                <td>{{ inventory_details.description }}</td>
+                <td>{{ inventory_details.location }}</td>
+                <td>{{ inventory_details.d_o_p }}</td>
+                <td>{{ inventory_details.purchase }}</td>
+                <td>{{ inventory_details.vendor }}</td>
+                <td>
+                    {% if inventory_details.receipt and inventory_details.receipt.url and inventory_details.receipt.name != "null" %}
+                        <a href="{{ inventory_details.receipt.url }}" target="_blank">
+                            <img src="{{ inventory_details.receipt.url }}" alt="Receipt" style="max-width:60px; max-height:60px;">
+                        </a>
+                    {% endif %}
+                </td>
+                <td>{{ inventory_details.condition }}</td>
+                <td>{{ inventory_details.assigned_to }}</td>
+                <td>{{ inventory_details.intended_usage }}</td>
+                <td>{{ inventory_details.additional_notes }}</td>
+                <td>
+                    <a href="{% url 'inventory-edit' inventory_details.id %}">Update</a>
+                    <a href="{% url 'inventory-delete' inventory_details.id %}">Delete</a>
+                </td>
+            </tr>
+            
+        </table>
+    </div>
+    <div class="add-home">
+        <a href="{% url 'home' %}">Back</a>
+    </div>
+{% endblock %}
